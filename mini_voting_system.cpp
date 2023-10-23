@@ -91,78 +91,83 @@ int main()
     int totalCandidate;
     string candidateName;
 
-    printTextLetterByLetter("Enter number of candidates: ", 70);
+    printTextLetterByLetter("Enter number of candidates (max 10): ", 70);
     cin >> totalCandidate;
 
-    for (int i = 1; i <= totalCandidate; i++)
-    {
-        printTextLetterByLetter("Enter the name of candidate number " + to_string(i) + ": ", 70);
-        cin >> candidateName;
-        candidates.push_back(Candidate(candidateName));
-    }
+    if(totalCandidate > 0 && totalCandidate <=10 ) {
 
-    cout << "\033[2J\033[H"; // Clear the terminal screen
-
-    while (true)
-    {
-        cout << "\033[33m----- Voting System -----\033[0m" << endl;
-
-        int choice = 1;
-        while (choice != 0)
+        for (int i = 1; i <= totalCandidate; i++)
         {
-            choice = votingProcess(candidates, votesQueue);
-            clearLines(candidates.size() + 3); // Clear the lines of the last vote
-        }
-
-        // Process votes
-        while (!votesQueue.empty())
-        {
-            int candidateNumber = votesQueue.front();
-            candidates[candidateNumber].votes++;
-            votesQueue.pop();
+            printTextLetterByLetter("Enter the name of candidate number " + to_string(i) + ": ", 70);
+            cin >> candidateName;
+            candidates.push_back(Candidate(candidateName));
         }
 
         cout << "\033[2J\033[H"; // Clear the terminal screen
 
-        cout << "\033[33m----- Voting System -----\033[0m" << endl;
-        printTextLetterByLetter("Do you want to go back? (y/n): ", 60);
-        char c;
-        cin >> c;
-        if (c == 'y' || c == 'Y')
+        while (true)
         {
-            cout << "\033[2J\033[H"; // Clear the terminal screen
-            continue;
-        }
-        else
-        {
-            clearLines(1);
-            printSplitTerminal(candidates);
-            printTextLetterByLetter("Do you want to save the votes to a file? (y/n): ", 70);
-            cin >> c;
+            cout << "\033[33m----- Voting System -----\033[0m" << endl;
 
+            int choice = 1;
+            while (choice != 0)
+            {
+                choice = votingProcess(candidates, votesQueue);
+                clearLines(candidates.size() + 3); // Clear the lines of the last vote
+            }
+
+            // Process votes
+            while (!votesQueue.empty())
+            {
+                int candidateNumber = votesQueue.front();
+                candidates[candidateNumber].votes++;
+                votesQueue.pop();
+            }
+
+            cout << "\033[2J\033[H"; // Clear the terminal screen
+
+            cout << "\033[33m----- Voting System -----\033[0m" << endl;
+            printTextLetterByLetter("Do you want to go back? (y/n): ", 60);
+            char c;
+            cin >> c;
             if (c == 'y' || c == 'Y')
             {
-                string filename;
-                printTextLetterByLetter("Enter the filename: ", 60);
-                cin >> filename;
-
-                ofstream file(filename);
-
-                for (int i = 0; i < candidates.size(); i++)
-                {
-                    file << candidates[i].name << ", votes: " << candidates[i].votes << endl;
-                }
-
-                file.close();
-                printTextLetterByLetter("\033[31mExit\033[0m\n", 60);
-                break;
+                cout << "\033[2J\033[H"; // Clear the terminal screen
+                continue;
             }
             else
             {
-                printTextLetterByLetter("\033[31mExit\033[0m\n", 60);
-                break;
+                clearLines(1);
+                printSplitTerminal(candidates);
+                printTextLetterByLetter("Do you want to save the votes to a file? (y/n): ", 70);
+                cin >> c;
+
+                if (c == 'y' || c == 'Y')
+                {
+                    string filename;
+                    printTextLetterByLetter("Enter the filename: ", 60);
+                    cin >> filename;
+
+                    ofstream file(filename);
+
+                    for (int i = 0; i < candidates.size(); i++)
+                    {
+                        file << candidates[i].name << ", votes: " << candidates[i].votes << endl;
+                    }
+
+                    file.close();
+                    printTextLetterByLetter("\033[31mExit\033[0m\n", 60);
+                    break;
+                }
+                else
+                {
+                    printTextLetterByLetter("\033[31mExit\033[0m\n", 60);
+                    break;
+                }
             }
         }
+    } else {
+        printTextLetterByLetter("\033[31mInvalid number of candidates. Please restart the program.\033[0m\n", 70);
     }
 
     return 0;
